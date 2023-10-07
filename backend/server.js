@@ -13,12 +13,16 @@ connectdatabase();
 
 
 const categoryrouter = require('./routers/category');
+const productrouter = require('./routers/product');
+
+
 ///middleware to parse body
 app.use(express.json());
 app.use(morgan('tiny'))
 
 console.log(API_URL)
 app.use(`${API_URL}category`,categoryrouter)
+app.use(`${API_URL}product`,productrouter)
 
 
 

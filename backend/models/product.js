@@ -58,4 +58,4 @@ const productscehema = mongoose.Schema({
     }
 })
 
-exports.Product = mongoose.model('Product',productscehema);
+module.exports = mongoose.model('Product',productscehema);

@@ -1,75 +1,178 @@
-// import { Product } from "../models/product";
-
-// module.exports.login = async (req, res, next) => {
-//     try {
-//         const { name, Password } = req.body;
-//         console.log("sd", name, Password)
-//         const user = await User.findOne({ name });
-//         if (!user)
-//             return res.json({ msg: "Incorrect Username or Password", status: false });
-//         const isPasswordValid = await bcrypt.compare(Password, user.Password);
-//         if (!isPasswordValid)
-//             return res.json({ msg: "Incorrect Username or Password", status: false });
-//         return res.json({ status: true, user });
-//     } catch (ex) {
-//         next(ex);
-//     }
-// };
+const product = require('../models/product')
+const categorie = require('../models/categorie');
+const { default: mongoose } = require('mongoose');
 
 
 
-// module.exports.register = async (req, res, next) => {
-//     try {
+module.exports.PostProduct = async (req, res) => {
+    try {
+        const check = await categorie.findById(req.body.category);
+        if (!check) return res.status(400).json({ msg: "invalid category Id" });
 
-//         const { name, email, Password, pic } = req.body;
-//         console.log(name, email, Password, pic)
-//         const finduser = await User.findOne({ email: email });
-//         console.log("finduser", finduser)
-//         if (finduser)
-//             return res.json({ msg: "Email already used", status: false });
-//         if (!finduser) {
-//             const hash = await bcrypt.hash(Password, 10);
-//             const user = await User.create({
-//                 name: name,
-//                 email: email,
-//                 Password: hash,
-//                 Image: pic
-//             });
-//             console.log("user", user)
-//             return res.json({ status: true, msg: "User has been Registered" });
-//         }
-//     } catch (error) {
-//         res.status(400).send({ msg: "User already exists", status: 200 })
-//     }
+        const isProductAdded = await product.create({
+            name: req.body.name,
+            description: req.body.description,
+            richDescription: req.body.richDescription,
+            image: req.body.image,
+            Images: req.body.Images,
+            brand: req.body.brand,
+            price: req.body.price,
+            category: req.body.category,
+            countinStock: req.body.countinStock,
+            ratings: req.body.ratings,
+            Numreviews: req.body.Numreviews,
+            isfeatured: req.body.isfeatured
+        })
 
-// }
+        if (!isProductAdded) {
+            return res.status(404).send("The product cannot be created")
+        }
 
+        return res.status(200).json({ msg: "The Product has been created" })
 
-
-// module.exports.getAllUsers = async (req, res, next) => {
-//     try {
-//         const users = await User.find({ _id: { $ne: req.params.id } }).select([
-//             "email",
-//             "name",
-//             "_id",
-//             "Image"
-//         ]);
-//         // console.log("user",users)
-//         return res.json(users);
-//     } catch (ex) {
-//         next(ex);
-//     }
-// };
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
+}
 
 
 
-// module.exports.logOut = (req, res, next) => {
-//     try {
-//         console.log("Adasd", req.params.id)
-//         if (!req.params.id) return res.json({ msg: "User id is required " });
-//         onlineUsers.delete(req.params.id);
-//         return res.status(200).send();
-//     } catch (ex) {
-//         next(ex);
-//     }
-// };
+module.exports.GetProduct = async (req, res) => {
+    try {
+        const productlist = await product.find();
+        if (!productlist) {
+            return res.status(404).send("No product")
+        }
+
+        return res.status(200).send(productlist)
+
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
+}
+
+
+module.exports.GetIndividualProduct = async (req, res) => {
+    try {
+        if(!mongoose.isValidObjectId(req.params.id)){
+            res.status(404).json({msg:"Invalid Object Id"})
+        }
+        const singleproduct = await product.findById(req.params.id);
+        if (!singleproduct) {
+            return res.status(404).json({ msg: "No category with id has been found" })
+        }
+
+        return res.status(200).json({ data: singleproduct })
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
+}
+
+
+
+module.exports.UpdateProduct = async (req, res) => {
+    try {
+        if(!mongoose.isValidObjectId(req.params.id)){
+            res.status(404).json({msg:"Product id is not valid"})
+        }
+        const check = await categorie.findById(req.body.category);
+        if (!check) return res.status(400).json({ msg: "invalid category Id" });
+
+        const update = await product.findByIdAndUpdate(
+            req.params.id,
+            {
+                name: req.body.name,
+                description: req.body.description,
+                richDescription: req.body.richDescription,
+                image: req.body.image,
+                Images: req.body.Images,
+                brand: req.body.brand,
+                price: req.body.price,
+                category: req.body.category,
+                countinStock: req.body.countinStock,
+                ratings: req.body.ratings,
+                Numreviews: req.body.Numreviews,
+                isfeatured: req.body.isfeatured
+            },
+            {new:true}
+        )
+        if (!update) {
+            return res.status(200).send("The category has not been updated")
+        }
+        return res.status(400).json({msg:"The category has been Updated",data:update})
+
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
+}
+
+
+module.exports.DeleteProduct = async (req, res) => {
+    try {
+        if(!mongoose.isValidObjectId(req.params.id)){
+            res.status(404).json({msg:"Product id is not valid"})
+        }
+        const find = await product.findByIdAndDelete(req.params.id)
+        console.log(find)
+        if (find) {
+            return res.status(200).send("The category has been deleted")
+        }
+        return res.status(400).send("The category has not been Deleted")
+
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
+}
+
+
+
+module.exports.ProductCount = async (req, res) => {
+    try {
+        const productcount = await product.countDocuments();
+        if (!productcount) {
+            return res.status(404).send("No product")
+        }
+        return res.status(200).json({productcount:productcount})
+
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
+}
+
+
+
+module.exports.FeaturedProduct = async (req, res) => {
+    try {
+       
+        const count = req.params.count ? req.params.count : 0;
+        console.log(count)
+        const products = await product.find({isfeatured:true}).limit(count);
+        if (!products) {
+            return res.status(404).send("No product")
+        }
+        return res.status(200).json({data:products})
+
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
+}
+
+
+module.exports.FilterProductByCategory = async (req,res) => {
+    try {
+        let filter = {};
+        if(req.query.categories){
+            filter = {categorie:req.query.categories.spil(",")}
+        }
+        console.log("filter")
+        const productlist = await product.find(filter);
+        if (!productlist) {
+            return res.status(404).send("No product")
+        }
+
+        return res.status(200).send(productlist)
+        
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
+}
