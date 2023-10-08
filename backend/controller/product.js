@@ -160,9 +160,10 @@ module.exports.FeaturedProduct = async (req, res) => {
 
 module.exports.FilterProductByCategory = async (req,res) => {
     try {
+        console.log("aaa",req.query.categories)
         let filter = {};
         if(req.query.categories){
-            filter = {categorie:req.query.categories.spil(",")}
+            filter = {categories:req.query.categories.spil(",")}
         }
         console.log("filter")
         const productlist = await product.find(filter);

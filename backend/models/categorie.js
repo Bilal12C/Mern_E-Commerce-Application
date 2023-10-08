@@ -17,4 +17,13 @@ const Categoryschema = mongoose.Schema({
     
 })
 
+
+Categoryschema.virtual('id').get(function(params) {
+    return this._id.toHexString();
+})
+
+Categoryschema.set('toJSON',{
+    virtuals:true,
+})
+
 module.exports = mongoose.model('Category',Categoryschema);

@@ -9,5 +9,5 @@ productrouter.get('/:id',GetIndividualProduct)
 productrouter.put('/:id',UpdateProduct)
 productrouter.delete('/:id',DeleteProduct)
 productrouter.get('/featured/:count',FeaturedProduct)
-productrouter.get('/filter/',FilterProductByCategory)
+productrouter.get('/filter',FilterProductByCategory)
 module.exports = productrouter;
