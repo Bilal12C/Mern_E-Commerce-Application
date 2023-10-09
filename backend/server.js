@@ -15,12 +15,15 @@ connectdatabase();
 const categoryrouter = require('./routers/category');
 const productrouter = require('./routers/product');
 const userrouter = require('./routers/user');
+const auth = require('./middleware/auth');
+const errorhandler = require('./middleware/error-handler');
 
 
 ///middleware to parse body
 app.use(express.json());
 app.use(morgan('tiny'))
-
+app.use(auth())
+app.use(errorhandler)
 
 app.use(`${API_URL}category`,categoryrouter)
 app.use(`${API_URL}product`,productrouter)

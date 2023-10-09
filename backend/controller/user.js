@@ -1,11 +1,13 @@
 const User = require("../models/user");
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken');
+const user = require("../models/user");
 module.exports.AddUser = async (req, res) => {
     try {
         const { email } = req.body;
 
-        const finduser = await User.find({ email: email })
+        const finduser = await User.findOne({ email: email })
+        console.log(finduser)
         if (finduser) return res.status(404).json({ msg: "user already exists" });
 
         const newuser = await User.create({
@@ -71,7 +73,8 @@ module.exports.LoginUser = async (req, res) => {
         if (!checkuser) return res.status(400).json({ msg: "User does not exists" })
         if (checkuser && await checkuser.comparePassword(req.body.password)) {
             const token = jwt.sign({
-                userid: checkuser._id
+                userid: checkuser._id,
+                isAdmin:checkuser.isAdmin
             }, process.env.JWT_KEY, {
                 expiresIn: '1h'
             })
@@ -83,6 +86,18 @@ module.exports.LoginUser = async (req, res) => {
     }
 }
 
+module.exports.usercount = async (req, res) => {
+    try {
+        const usercount = await User.countDocuments();
+        if (!usercount) {
+            return res.status(404).send("No Users")
+        }
+        return res.status(200).json({usercount:usercount})
+
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
+}
 
 
 // module.exports.DeleteCategory = async (req, res) => {
