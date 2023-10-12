@@ -17,6 +17,7 @@ const productrouter = require('./routers/product');
 const userrouter = require('./routers/user');
 const auth = require('./middleware/auth');
 const errorhandler = require('./middleware/error-handler');
+const OrderRouter = require('./routers/order');
 
 
 ///middleware to parse body
@@ -28,8 +29,7 @@ app.use(errorhandler)
 app.use(`${API_URL}category`,categoryrouter)
 app.use(`${API_URL}product`,productrouter)
 app.use(`${API_URL}user`,userrouter)
-
-
+app.use(`${API_URL}Order`,OrderRouter)
 
 
 const server = app.listen(process.env.PORT,()=>{
