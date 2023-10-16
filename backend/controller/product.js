@@ -61,7 +61,7 @@ module.exports.GetIndividualProduct = async (req, res) => {
     try {
         if(!mongoose.isValidObjectId(req.params.id)){
             res.status(404).json({msg:"Invalid Object Id"})
-        }
+        }product
         const singleproduct = await product.findById(req.params.id);
         if (!singleproduct) {
             return res.status(404).json({ msg: "No category with id has been found" })
@@ -81,21 +81,24 @@ module.exports.UpdateProduct = async (req, res) => {
             res.status(404).json({msg:"Product id is not valid"})
         }
 
-        // const check = await categorie.findById(req.body.category);
-        // if (!check) return res.status(400).json({ msg: "invalid category Id" });
+        const check = await categorie.findById(req.body.category);
+        if (!check) return res.status(400).json({ msg: "invalid category Id" });
 
-        const checkprdouct = await product.findById(req.body.params);
+        const checkprdouct = await product.findById(req.params.id);
+        console.log("check",checkprdouct)
         if (!checkprdouct) return res.status(400).json({ msg: "invalid product Id" });
   
 
         const file = req.file;
         let imagepath = ""
         if(file){
+            console.log("image select ki ha")
             const filename = await req.file.filename;
             const basepath = `${req.protocol}://${req.get('host')}/public/uploads/${filename}`
             imagepath = basepath
         }
         else{
+            console.log("image select nae kii");
             imagepath =  product.image;
         }
 
@@ -118,9 +121,9 @@ module.exports.UpdateProduct = async (req, res) => {
             {new:true}
         )
         if (!update) {
-            return res.status(200).send("The category has not been updated")
+            return res.status(200).send("The product has not been updated")
         }
-        return res.status(400).json({msg:"The category has been Updated",data:update})
+        return res.status(400).json({msg:"The product has been Updated",data:update})
 
     } catch (error) {
         res.status(500).json({ msg: error.message })
@@ -136,9 +139,9 @@ module.exports.DeleteProduct = async (req, res) => {
         const find = await product.findByIdAndDelete(req.params.id)
         console.log(find)
         if (find) {
-            return res.status(200).send("The category has been deleted")
+            return res.status(200).send("The product has been deleted")
         }
-        return res.status(400).send("The category has not been Deleted")
+        return res.status(400).send("The product has  not been Deleted")
 
     } catch (error) {
         res.status(500).json({ msg: error.message })
@@ -194,6 +197,45 @@ module.exports.FilterProductByCategory = async (req,res) => {
 
         return res.status(200).send(productlist)
         
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
+}
+
+
+module.exports.UpdateGalleryimages = async (req, res) => {
+    try {
+        console.log("hello")
+        if(!mongoose.isValidObjectId(req.params.id)){
+            res.status(404).json({msg:"Product id is not valid"})
+        }
+
+        const checkprdouct = await product.findById(req.params.id);
+        if (!checkprdouct) return res.status(400).json({ msg: "invalid product Id" });
+  
+        let imagesPath = [];
+        const files = req.files;
+        if(files){
+            files.map((file) => {
+                imagesPath.push(`${req.protocol}://${req.get('host')}/public/uploads/${file.filename}`)
+            })
+        }
+        console.log(imagesPath)
+        
+
+        const update = await product.findByIdAndUpdate(
+            req.params.id,
+            {
+                Images: imagesPath,
+                
+            },
+            {new:true}
+        )
+        if (!update) {
+            return res.status(200).send("The images gallery has not been updated")
+        }
+        return res.status(400).json({msg:"The image gallery has been  Updated",data:update})
+
     } catch (error) {
         res.status(500).json({ msg: error.message })
     }
