@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import Productcard from './Productcard';
@@ -6,12 +6,12 @@ const width = Dimensions.get('screen').width;
 const Productlist = (props) => {
  
   const { item } = props;
+
   return (
-   <TouchableOpacity>
-     <View style={{backgroundColor:'white'}}>
+   <Pressable>
+    
       <Productcard {...item}/>
-     </View>
-   </TouchableOpacity>
+   </Pressable>
   )
 }
 

@@ -1,12 +1,12 @@
-import { PanResponder, StyleSheet, Text, View } from 'react-native'
+import { PanResponder, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Image, ListItem } from '@rneui/themed'
 const SearchedProducts = (props) => {
     console.log(props)
     const { ProductFilter } = props;
-    console.log(ProductFilter.length)
+    
     return (
-        <View style={{flex:1,width:'100%'}}>
+        <ScrollView  style={{flex:1,width:'100%', marginTop:20}}>
             {
                 ProductFilter?.length > 0 ? (
                     ProductFilter?.map((item) => {
@@ -28,7 +28,7 @@ const SearchedProducts = (props) => {
                 )
             }
 
-        </View>
+        </ScrollView>
     )
 }
 

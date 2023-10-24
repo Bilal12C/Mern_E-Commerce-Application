@@ -1,10 +1,12 @@
-import { FlatList, StyleSheet, View, Text, Keyboard } from 'react-native'
+import { FlatList, StyleSheet, View, Text, Keyboard, Dimensions, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Productlist from './Productlist'
 import { SearchBar } from '@rneui/themed'
 import Header from '../../Shared/Header'
 import SearchedProducts from './SearchedProducts'
-
+import Banner from '../../Shared/Banner'
+import CategoryFilter from './CategoryFilter'
+const { width } = Dimensions.get('screen')
 const ProductContainer = () => {
 
     const data = [{
@@ -94,19 +96,70 @@ const ProductContainer = () => {
         "__v": 0
     }]
 
+
+    const categoryjson =
+        [{
+            "_id": {
+                "$oid": "5f15d5cdcb4a6642bddc0fe9"
+            },
+            "name": "Electronics",
+            "__v": 0
+        }, {
+            "_id": {
+                "$oid": "5f15d545f3a046427a1c26e2"
+            },
+            "name": "Beauty",
+            "__v": 0
+        }, {
+            "_id": {
+                "$oid": "5f15d54cf3a046427a1c26e3"
+            },
+            "name": "Computers",
+            "__v": 0
+        }, {
+            "_id": {
+                "$oid": "5f15d5b2cb4a6642bddc0fe7"
+            },
+            "name": "Home",
+            "__v": 0
+        }, {
+            "_id": {
+                "$oid": "5f15d5b7cb4a6642bddc0fe8"
+            },
+            "name": "Garden",
+            "__v": 0
+        }, {
+            "_id": {
+                "$oid": "5f15d5cdcb4a6642bddc0f99"
+            },
+            "name": "Games",
+            "__v": 0
+        }]
+
     const [product, setproduct] = useState([])
     const [ProductFilter, setsearchedProduct] = useState([])
     const [focus, setfocus] = useState(false)
     const [searchtext, setsearchtext] = useState('')
+    const [categories, setcategories] = useState([]);
+    const [isactive, setactive] = useState(-1)
+    const [initialstate, setinitialstate] = useState([])
+    const [productfltctg, setproductfiltrctg] = useState([])
 
     useEffect(() => {
         setproduct(data)
         setsearchedProduct(data)
         setfocus(false)
+        setcategories(categoryjson)
+        setactive(-1)
+        setinitialstate(data)
+
         return () => {
             setproduct([])
             setfocus(false)
             setsearchedProduct([])
+            setinitialstate([])
+            setcategories([])
+            setactive(-1)
         }
     }, [])
 
@@ -121,7 +174,6 @@ const ProductContainer = () => {
             setsearchtext(text)
         }
         else {
-            console.log("text",text)
             setsearchtext(text)
             setsearchedProduct(data)
         }
@@ -134,20 +186,37 @@ const ProductContainer = () => {
     }
 
     const onblur = () => {
-       setfocus(false)
+        setfocus(false)
     }
 
     const onClear = () => {
-      setfocus(false)
-      Keyboard.dismiss();
+        setfocus(false)
+        Keyboard.dismiss();
     }
-    
+
+
+
+    const FilterCategory = (ctg) => {
+
+        {
+            ctg === 'all' ? [
+                setproductfiltrctg(initialstate),
+                setactive(-1)
+            ] : [
+                setproductfiltrctg(
+                    product.filter((item) => item.category.$oid === ctg._id.$oid)
+                ),
+                setactive(ctg._id.$oid)
+            ]
+        }
+    }
+
 
     return (
-        <View style={{ flex: 1 , width:'100%' }}>
+        <View style={{ flex: 1, width: '100%' }}>
             <SearchBar
                 value={searchtext}
-                onFocus={onfocus} 
+                onFocus={onfocus}
                 containerStyle={styles.containerStyle}
                 placeholder="Search Here..."
                 lightTheme={true}
@@ -157,16 +226,37 @@ const ProductContainer = () => {
                 inputContainerStyle={styles.inputContainerStyle}
                 onClear={onClear}
             />
+
+            <View style={{marginVertical:10}}>
+                <Banner />
+            </View>
+
             {
                 focus === true ? (
                     <SearchedProducts ProductFilter={ProductFilter} />
                 ) : (
-                    <FlatList
-                        numColumns={2}
-                        data={product}
-                        renderItem={({ item }) => <Productlist key={item.id} item={item} />}
-                        keyExtractor={item => item.name}
-                    />
+                    <>
+                            <View>
+                                <CategoryFilter FilterCategory={FilterCategory} setactive={setactive} isactive={isactive} categories={categories} />
+                            </View>
+
+                            {
+                                productfltctg?.length > 0 ?(
+                                    <FlatList
+                                        numColumns={2}
+                                        data={productfltctg}
+                                        renderItem={({ item }) => <Productlist key={item.id} item={item} />}
+                                        keyExtractor={item => item.name}
+                                    />
+                                ) : (
+                                    <View style={styles.nofoundview}>
+                                        <Text style={styles.text}>No product Found with this categgory</Text>
+                                    </View>
+                                )
+                            }
+
+
+                    </>
                 )
             }
 
@@ -191,6 +281,15 @@ const styles = StyleSheet.create({
     },
     inutstyle: {
         color: 'black',
-
+    },
+    nofoundview:{
+        height:width,
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    text:{
+        color:'black',
+        fontWeight:'800',
+        fontSize:20
     }
 })

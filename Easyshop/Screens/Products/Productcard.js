@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
         elevation: 8,
         alignItems: 'center',
         backgroundColor: 'white',
+        marginTop:20
     },
     row:{
         marginVertical:10,
