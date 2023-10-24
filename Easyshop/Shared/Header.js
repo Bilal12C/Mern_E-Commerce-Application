@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical:10,
-        paddingHorizontal:20
+        paddingHorizontal:20,
+        backgroundColor:'white'
     },
     title:{
         fontWeight:'bold',

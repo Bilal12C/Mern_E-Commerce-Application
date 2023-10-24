@@ -3,24 +3,17 @@ import React from 'react'
 import ProductContainer from './Screens/Products/ProductContainer'
 import Header from './Shared/Header'
 import { LogBox } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
+import TabNavigation from './Navigators/TabNavigation'
 LogBox.ignoreAllLogs(true)
 const App = () => {
   return (
-      <View style={styles.container}>
-        <Header/>
-        <ProductContainer />
-      </View>
+    <NavigationContainer>
+        <TabNavigation />
+    </NavigationContainer>
 
   )
 }
 
 export default App
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white'
-  }
-})

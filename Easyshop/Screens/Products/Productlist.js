@@ -8,8 +8,7 @@ const Productlist = (props) => {
   const { item } = props;
 
   return (
-   <Pressable>
-    
+   <Pressable onPress={()=>props.navigation.navigate('Product Details',{item:item})}>
       <Productcard {...item}/>
    </Pressable>
   )

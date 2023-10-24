@@ -11,7 +11,7 @@ const SearchedProducts = (props) => {
                 ProductFilter?.length > 0 ? (
                     ProductFilter?.map((item) => {
                         return (
-                            <ListItem key={item.name} bottomDivider>
+                            <ListItem onPress={()=>props.navigation.navigate('Product Details',{item:item})} key={item.name} bottomDivider>
                             <Image source={{uri:item.image}} style={{ width: 40, height: 40, borderRadius: 50 }} />
                             <ListItem.Content>
                                 <ListItem.Title>{item.name}</ListItem.Title>

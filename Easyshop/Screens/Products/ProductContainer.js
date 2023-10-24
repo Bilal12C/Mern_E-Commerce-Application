@@ -7,7 +7,7 @@ import SearchedProducts from './SearchedProducts'
 import Banner from '../../Shared/Banner'
 import CategoryFilter from './CategoryFilter'
 const { width } = Dimensions.get('screen')
-const ProductContainer = () => {
+const ProductContainer = (props) => {
 
     const data = [{
         "_id": {
@@ -142,7 +142,7 @@ const ProductContainer = () => {
     const [searchtext, setsearchtext] = useState('')
     const [categories, setcategories] = useState([]);
     const [isactive, setactive] = useState(-1)
-    const [initialstate, setinitialstate] = useState([])
+    const [initialstate, setinitialstate] = useState(data)
     const [productfltctg, setproductfiltrctg] = useState([])
 
     useEffect(() => {
@@ -152,6 +152,7 @@ const ProductContainer = () => {
         setcategories(categoryjson)
         setactive(-1)
         setinitialstate(data)
+        setproductfiltrctg(initialstate)
 
         return () => {
             setproduct([])
@@ -160,6 +161,7 @@ const ProductContainer = () => {
             setinitialstate([])
             setcategories([])
             setactive(-1)
+            setproductfiltrctg([])
         }
     }, [])
 
@@ -213,7 +215,9 @@ const ProductContainer = () => {
 
 
     return (
-        <View style={{ flex: 1, width: '100%' }}>
+        <View style={{ flex: 1, width: '100%' , backgroundColor:'white' }}>
+            <Header />
+
             <SearchBar
                 value={searchtext}
                 onFocus={onfocus}
@@ -227,33 +231,33 @@ const ProductContainer = () => {
                 onClear={onClear}
             />
 
-            <View style={{marginVertical:10}}>
+            <View style={{ marginVertical: 10 }}>
                 <Banner />
             </View>
 
             {
                 focus === true ? (
-                    <SearchedProducts ProductFilter={ProductFilter} />
+                    <SearchedProducts navigation={props.navigation} ProductFilter={ProductFilter} />
                 ) : (
                     <>
-                            <View>
-                                <CategoryFilter FilterCategory={FilterCategory} setactive={setactive} isactive={isactive} categories={categories} />
-                            </View>
+                        <View>
+                            <CategoryFilter FilterCategory={FilterCategory} setactive={setactive} isactive={isactive} categories={categories} />
+                        </View>
 
-                            {
-                                productfltctg?.length > 0 ?(
-                                    <FlatList
-                                        numColumns={2}
-                                        data={productfltctg}
-                                        renderItem={({ item }) => <Productlist key={item.id} item={item} />}
-                                        keyExtractor={item => item.name}
-                                    />
-                                ) : (
-                                    <View style={styles.nofoundview}>
-                                        <Text style={styles.text}>No product Found with this categgory</Text>
-                                    </View>
-                                )
-                            }
+                        {
+                            productfltctg?.length > 0 ? (
+                                <FlatList
+                                    numColumns={2}
+                                    data={productfltctg}
+                                    renderItem={({ item }) => <Productlist key={item.id} item={item} navigation={props.navigation} />}
+                                    keyExtractor={item => item.name}
+                                />
+                            ) : (
+                                <View style={styles.nofoundview}>
+                                    <Text style={styles.text}>No product Found with this categgory</Text>
+                                </View>
+                            )
+                        }
 
 
                     </>
@@ -282,14 +286,14 @@ const styles = StyleSheet.create({
     inutstyle: {
         color: 'black',
     },
-    nofoundview:{
-        height:width,
-        justifyContent:'center',
-        alignItems:'center'
+    nofoundview: {
+        height: width,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
-    text:{
-        color:'black',
-        fontWeight:'800',
-        fontSize:20
+    text: {
+        color: 'black',
+        fontWeight: '800',
+        fontSize: 20
     }
 })
