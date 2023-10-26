@@ -145,6 +145,7 @@ const ProductContainer = (props) => {
     const [initialstate, setinitialstate] = useState(data)
     const [productfltctg, setproductfiltrctg] = useState([])
 
+
     useEffect(() => {
         setproduct(data)
         setsearchedProduct(data)
@@ -216,8 +217,6 @@ const ProductContainer = (props) => {
 
     return (
         <View style={{ flex: 1, width: '100%' , backgroundColor:'white' }}>
-            <Header />
-
             <SearchBar
                 value={searchtext}
                 onFocus={onfocus}

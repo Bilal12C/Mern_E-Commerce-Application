@@ -1,9 +1,12 @@
 import { Dimensions, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-
+import { useDispatch } from 'react-redux'
+import { addtocart } from '../../cartslice/cartslice'
 const { width } = Dimensions.get('screen')
 const Productcard = (props) => {
     const { name, price, image, countInStock } = props;
+    let dispatch = useDispatch();
+    
     return (
         <View style={styles.container}>
             <Image source={{ uri: image ? image : "https://ik.imagekit.io/demo/img/tr:di-medium_cafe_B1iTdD0C.jpg/non_existent_image.jpg" }} style={styles.image} />
@@ -14,7 +17,7 @@ const Productcard = (props) => {
             <Text style={styles.price}>${price}</Text>
             </View>
             {countInStock > 0 ? (
-                <Pressable style={styles.Addbutton} >
+                <Pressable style={styles.Addbutton} onPress={() => dispatch(addtocart(props))} >
                     <Text style={{color:'white'}}>Add</Text>
                 </Pressable>
             ):(
@@ -23,6 +26,8 @@ const Productcard = (props) => {
         </View>
     )
 }
+
+
 
 export default Productcard
 

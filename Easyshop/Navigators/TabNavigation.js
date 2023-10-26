@@ -3,6 +3,7 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { HomeNavigator } from './StackNavigation';
+import CartNavigator from './CardNavigator';
 const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
   return (
@@ -42,7 +43,7 @@ const TabNavigation = () => {
         })}
       >
         <Tab.Screen name="Home" options={{headerShown:false}} component={HomeNavigator} />
-        <Tab.Screen name="ShoppingCart" options={{headerShown:false}} component={HomeNavigator} />
+        <Tab.Screen name="ShoppingCart" options={{headerShown:false}} component={CartNavigator} />
         <Tab.Screen name="Admin" options={{headerShown:false}} component={HomeNavigator} />
         <Tab.Screen name="User" options={{headerShown:false}} component={HomeNavigator} />
       </Tab.Navigator>

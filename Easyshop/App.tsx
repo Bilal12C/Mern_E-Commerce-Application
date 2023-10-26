@@ -1,16 +1,19 @@
-import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import ProductContainer from './Screens/Products/ProductContainer'
-import Header from './Shared/Header'
 import { LogBox } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import TabNavigation from './Navigators/TabNavigation'
+import { Provider } from 'react-redux'
+import store from './Screens/store'
+import Header from './Shared/Header'
 LogBox.ignoreAllLogs(true)
 const App = () => {
   return (
-    <NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Header/>
         <TabNavigation />
-    </NavigationContainer>
+      </NavigationContainer>
+    </Provider>
 
   )
 }
