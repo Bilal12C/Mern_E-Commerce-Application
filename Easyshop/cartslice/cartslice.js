@@ -11,11 +11,17 @@ const cartreducer = createSlice({
     reducers:{
         addtocart(state,action){
             state.cartitem.push(action.payload)
+        },
+        ClearCart(state){
+            state.cartitem = []
+        },
+        deleteFromCart(state,action){
+           state.cartitem = state.cartitem.filter((item) => item.name !== action.payload.name)
         }
     }
 })
 
 
-export const { addtocart } = cartreducer.actions;
+export const { addtocart , ClearCart , deleteFromCart } = cartreducer.actions;
 
 export default cartreducer.reducer;

@@ -4,7 +4,6 @@ import { Image } from '@rneui/themed'
 
 const SingleProduct = (props) => {
   
-  console.log("proos",props.route.params.item)
   const[item,setitem] = useState(props.route.params.item)
   const[availibility,setavalibility] =  useState(null)
 
