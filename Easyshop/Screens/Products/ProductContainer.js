@@ -1,16 +1,18 @@
 import { FlatList, StyleSheet, View, Text, Keyboard, Dimensions, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Productlist from './Productlist'
-import { SearchBar } from '@rneui/themed'
+import { Button, SearchBar } from '@rneui/themed'
 import SearchedProducts from './SearchedProducts'
 import Banner from '../../Shared/Banner'
 import CategoryFilter from './CategoryFilter'
 import { data } from '../../assets/data/data'
 import { categoryjson } from '../../assets/data/data'
+import axios from 'axios'
+import { API_URL, Get_Cateogry_URL, Get_Product_URL } from '../../actions/type'
 const { width } = Dimensions.get('screen')
 const ProductContainer = (props) => {
 
-  
+
 
     const [product, setproduct] = useState([])
     const [ProductFilter, setsearchedProduct] = useState([])
@@ -23,13 +25,47 @@ const ProductContainer = (props) => {
 
 
     useEffect(() => {
-        setproduct(data)
-        setsearchedProduct(data)
+        GetProduct();
+        getCategories();
+    }, [])
+
+    const GetProduct = async () => {
+        try {
+            const url = API_URL + Get_Product_URL;
+            console.log(url)
+            const res = await axios.get(url)
+            console.log(res.data)
+            if (res.data) {
+                setproduct(res.data)
+                setsearchedProduct(res.data)
+                setinitialstate(res.data)
+                setproductfiltrctg(res.data)
+            }
+        } catch (error) {
+           console.log(error)
+        }
+
+    }
+
+    const getCategories =async() => {
+      try {
+         const url = API_URL + Get_Cateogry_URL;
+         const category = await axios.get(url);
+         if(category.data){
+            setcategories(category.data)
+         }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+
+    useEffect(() => {
+
         setfocus(false)
-        setcategories(categoryjson)
+        
         setactive(-1)
-        setinitialstate(data)
-        setproductfiltrctg(initialstate)
+
 
         return () => {
             setproduct([])
@@ -92,7 +128,7 @@ const ProductContainer = (props) => {
 
 
     return (
-        <View style={{ flex: 1, width: '100%' , backgroundColor:'white' }}>
+        <View style={{ flex: 1, width: '100%', backgroundColor: 'white' }}>
             <SearchBar
                 value={searchtext}
                 onFocus={onfocus}
@@ -105,7 +141,6 @@ const ProductContainer = (props) => {
                 inputContainerStyle={styles.inputContainerStyle}
                 onClear={onClear}
             />
-
             <View style={{ marginVertical: 10 }}>
                 <Banner />
             </View>

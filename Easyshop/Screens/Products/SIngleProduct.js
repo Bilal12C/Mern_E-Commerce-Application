@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { Image } from '@rneui/themed'
 
@@ -10,7 +10,7 @@ const SingleProduct = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.imagecontent}>
-        <Image source={{uri:item.image}} style={{resizeMode:'cover' , width:'100%', height:'100%'}}/>
+        <Image PlaceholderContent={<ActivityIndicator size={20} color={'black'}/>} source={{uri:item.image}} style={{resizeMode:'cover' , width:'100%', height:'100%'}}/>
       </View>
       <View style={styles.content}>
         <Text style={styles.textdesign}>{item.name}</Text>

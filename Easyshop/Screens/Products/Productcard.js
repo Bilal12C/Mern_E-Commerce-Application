@@ -1,5 +1,6 @@
-import { Dimensions, Image, Pressable, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Dimensions, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { Image } from '@rneui/themed'
 import { useDispatch } from 'react-redux'
 import { addtocart } from '../../cartslice/cartslice'
 const { width } = Dimensions.get('screen')
@@ -9,7 +10,7 @@ const Productcard = (props) => {
     
     return (
         <View style={styles.container}>
-            <Image source={{ uri: image ? image : "https://ik.imagekit.io/demo/img/tr:di-medium_cafe_B1iTdD0C.jpg/non_existent_image.jpg" }} style={styles.image} />
+            <Image PlaceholderContent={<ActivityIndicator size={20} color={'black'}/>} source={{ uri: image ? image : "https://ik.imagekit.io/demo/img/tr:di-medium_cafe_B1iTdD0C.jpg/non_existent_image.jpg" }} style={styles.image} />
             <View style={styles.row}>
             <Text style={styles.title}>
                 {name.length > 15 ? name.substring(0,15-3 ) + "...." : name}
