@@ -2,12 +2,15 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const cors = require('cors')
-app.use(cors())
-app.options("*",cors())
 const PORT = process.env.PORT || 3001
 const API_URL = process.env.API_URL;
 const morgan = require('morgan');
 
+
+
+app.use(cors({
+    origin:'*'
+}))
 const connectdatabase = require('./connect/connectdb');
 connectdatabase();
 
@@ -31,6 +34,11 @@ app.use(`${API_URL}category`,categoryrouter)
 app.use(`${API_URL}product`,productrouter)
 app.use(`${API_URL}user`,userrouter)
 app.use(`${API_URL}Order`,OrderRouter)
+
+
+app.get('/',(req,res) => {
+    res.send({msg:"Helo how are you"})
+})
 
 
 const server = app.listen(process.env.PORT,()=>{

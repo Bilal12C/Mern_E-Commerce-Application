@@ -1,5 +1,5 @@
-import { FlatList, StyleSheet, View, Text, Keyboard, Dimensions, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { FlatList, StyleSheet, View, Text, Keyboard, Dimensions, ScrollView, TurboModuleRegistry, ActivityIndicator } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
 import Productlist from './Productlist'
 import { Button, SearchBar } from '@rneui/themed'
 import SearchedProducts from './SearchedProducts'
@@ -9,6 +9,7 @@ import { data } from '../../assets/data/data'
 import { categoryjson } from '../../assets/data/data'
 import axios from 'axios'
 import { API_URL, Get_Cateogry_URL, Get_Product_URL } from '../../actions/type'
+import { useFocusEffect } from '@react-navigation/native'
 const { width } = Dimensions.get('screen')
 const ProductContainer = (props) => {
 
@@ -22,24 +23,27 @@ const ProductContainer = (props) => {
     const [isactive, setactive] = useState(-1)
     const [initialstate, setinitialstate] = useState(data)
     const [productfltctg, setproductfiltrctg] = useState([])
+    const[loading , setloading] = useState(true)
 
 
-    useEffect(() => {
-        GetProduct();
-        getCategories();
-    }, [])
+    useEffect(()=>{
+      GetProduct();
+      getCategories();
+    },[])
 
     const GetProduct = async () => {
         try {
             const url = API_URL + Get_Product_URL;
             console.log(url)
+            
             const res = await axios.get(url)
-            console.log(res.data)
             if (res.data) {
+                console.log("ress",res.data.length)
                 setproduct(res.data)
                 setsearchedProduct(res.data)
                 setinitialstate(res.data)
                 setproductfiltrctg(res.data)
+                setloading(false)
             }
         } catch (error) {
            console.log(error)
@@ -51,8 +55,10 @@ const ProductContainer = (props) => {
       try {
          const url = API_URL + Get_Cateogry_URL;
          const category = await axios.get(url);
+         console.log("cateogries data is",category.data)
          if(category.data){
             setcategories(category.data)
+            setloading(false)
          }
       } catch (error) {
         console.log(error)
@@ -65,8 +71,6 @@ const ProductContainer = (props) => {
         setfocus(false)
         
         setactive(-1)
-
-
         return () => {
             setproduct([])
             setfocus(false)
@@ -119,7 +123,7 @@ const ProductContainer = (props) => {
                 setactive(-1)
             ] : [
                 setproductfiltrctg(
-                    product.filter((item) => item.category.$oid === ctg._id.$oid)
+                    product.filter((item) => item.category === ctg._id)
                 ),
                 setactive(ctg._id.$oid)
             ]
@@ -129,7 +133,14 @@ const ProductContainer = (props) => {
 
     return (
         <View style={{ flex: 1, width: '100%', backgroundColor: 'white' }}>
-            <SearchBar
+        {
+            loading ? (
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                   <ActivityIndicator size={25} color={'black'}/>
+                </View>
+            ):(
+                <>
+                <SearchBar
                 value={searchtext}
                 onFocus={onfocus}
                 containerStyle={styles.containerStyle}
@@ -173,6 +184,9 @@ const ProductContainer = (props) => {
                     </>
                 )
             }
+                </>
+            )
+        }
 
         </View>
 

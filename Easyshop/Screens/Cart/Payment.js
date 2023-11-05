@@ -6,7 +6,6 @@ import { Button, Header, ListItem } from '@rneui/themed';
 import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { CheckBox } from '@rneui/themed';
 const Payment = (props) => {
   const order = props.route?.params?.order;
   console.log("order",order)
@@ -32,13 +31,13 @@ const Payment = (props) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Choose Your Payment Method</Text>
-      {deliveryMethod.map((item) => {
+      {/* {deliveryMethod.map((item) => {
         return (
           <ListItem style={styles.liststyle} key={item.name} onPress={() => setselectedvalue(item.value)} >
             <ListItem.Title style={{color:selectedvalue == item.value ? 'orange' : 'black'}}>{item.name}</ListItem.Title>
           </ListItem>
         )
-      })}
+      })} */}
       {
         selectedvalue === 3 ? (
           <>

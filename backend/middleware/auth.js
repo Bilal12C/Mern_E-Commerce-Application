@@ -12,7 +12,8 @@ function auth(params) {
             { url: /\/api\/v1\/product(.*)/, method: ['GET', 'OPTIONS'] },
             { url: /\/api\/v1\/category(.*)/, method: ['GET', 'OPTIONS'] },
             '/api/v1/user/login',
-            '/api/v1/user/register'
+            '/api/v1/user/register',
+            '/'
             ]
     })
 }

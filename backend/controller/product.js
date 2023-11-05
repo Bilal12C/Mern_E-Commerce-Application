@@ -44,7 +44,7 @@ module.exports.PostProduct = async (req, res) => {
 
 module.exports.GetProduct = async (req, res) => {
     try {
-        const productlist = await product.find();
+        const productlist = await product.find().populate('category');
         if (!productlist) {
             return res.status(404).send("No product")
         }

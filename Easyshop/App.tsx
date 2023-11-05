@@ -5,6 +5,7 @@ import TabNavigation from './Navigators/TabNavigation'
 import { Provider } from 'react-redux'
 import store from './Screens/store'
 import Header from './Shared/Header'
+import FlashMessage from 'react-native-flash-message'
 LogBox.ignoreAllLogs(true)
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Header/>
         <TabNavigation />
       </NavigationContainer>
+      <FlashMessage position={'top'} />
     </Provider>
 
   )

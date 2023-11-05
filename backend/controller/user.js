@@ -1,14 +1,14 @@
 const User = require("../models/user");
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken');
-const user = require("../models/user");
 module.exports.AddUser = async (req, res) => {
     try {
         const { email } = req.body;
-
         const finduser = await User.findOne({ email: email })
-        console.log(finduser)
-        if (finduser) return res.status(404).json({ msg: "user already exists" });
+        if (finduser) {
+            console.log(finduser)
+            return res.json({ success:false ,msg: "user already exists" })
+        };
 
         const newuser = await User.create({
             name: req.body.name,
@@ -24,13 +24,14 @@ module.exports.AddUser = async (req, res) => {
         })
 
         if (!newuser) {
-            return res.status(404).send("The user cannt be created")
+            return res.json({status:false , msg:"user not created"})
         }
 
-        return res.status(200).json({ msg: "The user has been created", data: newuser })
+        return res.json({ status:true, msg: "The user has been created", data: newuser })
 
     } catch (error) {
-        res.status(500).json({ msg: error.message })
+        console.log(error)
+        return res.json({status:false, msg: error.message })
     }
 }
 
@@ -46,7 +47,7 @@ module.exports.GetSingleUser = async (req, res) => {
 
         return res.status(200).json({ data: singleuser })
     } catch (error) {
-        res.status(500).json({ msg: error.message })
+        return res.json({msg:error,status:400})
     }
 }
 
@@ -62,15 +63,17 @@ module.exports.GetAllUser = async (req, res) => {
         return res.status(200).send(Allusers)
 
     } catch (error) {
-        res.status(500).json({ msg: error.message })
+        return res.json({msg:error,status:400})
     }
 }
 
 
 module.exports.LoginUser = async (req, res) => {
     try {
+        console.log(req.body)
         const checkuser = await User.findOne({ email: req.body.email })
-        if (!checkuser) return res.status(400).json({ msg: "User does not exists" })
+        console.log("check user is",checkuser)
+        if (!checkuser) return res.json({status:false,msg: "User does not exists" })
         if (checkuser && await checkuser.comparePassword(req.body.password)) {
             const token = jwt.sign({
                 userid: checkuser._id,
@@ -79,10 +82,13 @@ module.exports.LoginUser = async (req, res) => {
                 expiresIn: '1h'
             })
 
-            res.status(200).json({ emai: checkuser.email, token: token })
+            return res.json({ data:checkuser , status:200 , token:token , msg:"Successfull loggedin" })
+        }
+        else{
+            return res.json({msg:"Password not correct",status:400})
         }
     } catch (error) {
-        res.status(500).json({ msg: error.message })
+        return res.json({msg:error,status:400})
     }
 }
 
@@ -95,7 +101,7 @@ module.exports.usercount = async (req, res) => {
         return res.status(200).json({usercount:usercount})
 
     } catch (error) {
-        res.status(500).json({ msg: error.message })
+        return res.json({msg:error,status:400})
     }
 }
 

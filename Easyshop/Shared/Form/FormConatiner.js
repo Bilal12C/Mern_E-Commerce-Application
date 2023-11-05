@@ -15,6 +15,7 @@ export default FormConatiner
 const styles = StyleSheet.create({
     container:{
         // marginVertical:20,
+        flex:1,
         width:width,
         justifyContent:'center',
         alignItems:'center'
