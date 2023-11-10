@@ -1,11 +1,13 @@
-import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Dimensions, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { API_URL, Get_Product_URL } from '../../actions/type';
 import axios from 'axios';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { SearchBar } from '@rneui/themed';
 import { FlatList } from 'react-native';
 import Listitem from './Listitem';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { showMessage } from 'react-native-flash-message';
 
 
 const listitemHeader = () => {
@@ -13,16 +15,16 @@ const listitemHeader = () => {
     <View style={styles.header}>
       <View style={styles.Headeritem}></View>
       <View style={styles.Headeritem}>
-        <Text style={{color:'black',fontWeight:'bold'}}>Brand</Text>
+        <Text style={{ color: 'black', fontWeight: 'bold' }}>Brand</Text>
       </View>
       <View style={styles.Headeritem}>
-        <Text style={{color:'black',fontWeight:'bold'}}>nam</Text>
+        <Text style={{ color: 'black', fontWeight: 'bold' }}>nam</Text>
       </View>
       <View style={styles.Headeritem}>
-        <Text style={{color:'black',fontWeight:'bold'}}>Category</Text>
+        <Text style={{ color: 'black', fontWeight: 'bold' }}>Category</Text>
       </View>
       <View style={styles.Headeritem}>
-        <Text style={{color:'black',fontWeight:'bold'}}>Price</Text>
+        <Text style={{ color: 'black', fontWeight: 'bold' }}>Price</Text>
       </View>
     </View>
   )
@@ -33,6 +35,7 @@ const Product = () => {
   const [loading, setloading] = useState(true)
   const [token, settoken] = useState('')
   const [search, setsearch] = useState('')
+  let navigate = useNavigation();
 
   let focus = useIsFocused();
 
@@ -58,20 +61,51 @@ const Product = () => {
     }
   }
 
+
+  const deleteitem = async (id) => {
+    console.log("id", id)
+
+    const url = API_URL + Get_Product_URL;
+    const token = await AsyncStorage.getItem('token')
+    console.log("token", token)
+    const res = await axios.delete(`${url}/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    console.log(res.data)
+    if (res.data.status == true) {
+      showMessage({
+        type: 'success',
+        message: res.data.msg
+      })
+      GetProductData();
+    }
+
+  }
   const handlesearchtext = (text) => {
     if (text) {
-        const data = productlist.filter((i) => i.name.toLowerCase().includes(text.toLowerCase()))
-        setProductfilter(data)
-        setsearch(text)
+      const data = productlist.filter((i) => i.name.toLowerCase().includes(text.toLowerCase()))
+      setProductfilter(data)
+      setsearch(text)
     }
     else {
-        console.log(productlist.length)
-        setproductlist(productlist)
-        setsearch(text)
+      console.log(productlist.length)
+      setproductlist(productlist)
+      setsearch(text)
     }
-}
+  }
   return (
     <View style={styles.container}>
+      <View style={styles.row}>
+        <Pressable onPress={() => navigate.navigate('Order')} style={styles.samebutton}>
+          <Text style={styles.sameText}>Orders</Text>
+        </Pressable >
+        <Pressable onPress={() => navigate.navigate('ProductForm')} style={styles.samebutton}>
+          <Text style={styles.sameText}>Products</Text>
+        </Pressable>
+        <Pressable onPress={() => navigate.navigate('Categories')} style={styles.samebutton}>
+          <Text style={styles.sameText}>Categories</Text>
+        </Pressable>
+      </View>
       <SearchBar
         value={search}
         containerStyle={styles.containerStyle}
@@ -90,10 +124,10 @@ const Product = () => {
           <FlatList
             ListHeaderComponent={listitemHeader}
             data={productfilter}
-            keyExtractor={(item) =>item.id}
-            renderItem={({ item , index }) => (
-              <Listitem {...item} index={index}/>
-        )}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              <Listitem item={item} deleteitem={deleteitem} index={index} />
+            )}
           />
         )
       }
@@ -108,6 +142,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white'
   },
+
+  samebutton: { backgroundColor: 'skyblue', alignItems: 'center', justifyContent: 'center', paddingVertical: 10, paddingHorizontal: 20 },
+  sameText:{color:'white',fontSize:15},
+  row: { flexDirection: 'row', marginVertical: 20, paddingHorizontal: 20, justifyContent: 'space-between' , marginHorizontal:10 },
+
   contentwait: {
     flex: 1,
     justifyContent: 'center',
@@ -128,13 +167,13 @@ const styles = StyleSheet.create({
   inutstyle: {
     color: 'black',
   },
-  header:{
-    flexDirection:'row',
-    padding:5,
-    backgroundColor:'gainsboro'
+  header: {
+    flexDirection: 'row',
+    padding: 5,
+    backgroundColor: 'gainsboro'
   },
-  Headeritem:{
-    width:Dimensions.get('screen').width/5,
-    margin:3,
+  Headeritem: {
+    width: Dimensions.get('screen').width / 5,
+    margin: 3,
   }
 })

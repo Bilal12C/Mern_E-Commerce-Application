@@ -20,7 +20,7 @@ const CategoryFilter = (props) => {
                         <TouchableOpacity onPress={() => {
                             props.FilterCategory(item)
                         }} key={item.name}
-                            style={{ padding: 8, backgroundColor: props.isactive === item._id.$oid ? '#03bafc' : '#aee1eb', margin: 5, borderRadius: 2 }}>
+                            style={{ padding: 8, backgroundColor: props.isactive === item._id ? '#03bafc' : '#aee1eb', margin: 5, borderRadius: 2 }}>
                             <Text>{item.name}</Text>
                         </TouchableOpacity>
                     )

@@ -10,6 +10,8 @@ import { categoryjson } from '../../assets/data/data'
 import axios from 'axios'
 import { API_URL, Get_Cateogry_URL, Get_Product_URL } from '../../actions/type'
 import { useFocusEffect } from '@react-navigation/native'
+import { useDispatch } from 'react-redux'
+import { addtocategory } from '../../CategorySlice/CategorySlice'
 const { width } = Dimensions.get('screen')
 const ProductContainer = (props) => {
 
@@ -51,6 +53,8 @@ const ProductContainer = (props) => {
 
     }
 
+    let disptach = useDispatch();
+
     const getCategories =async() => {
       try {
          const url = API_URL + Get_Cateogry_URL;
@@ -58,6 +62,7 @@ const ProductContainer = (props) => {
          console.log("cateogries data is",category.data)
          if(category.data){
             setcategories(category.data)
+            disptach(addtocategory(category.data))
             setloading(false)
          }
       } catch (error) {
@@ -117,15 +122,17 @@ const ProductContainer = (props) => {
 
     const FilterCategory = (ctg) => {
 
+        console.log("ctg is ",ctg)
+
         {
             ctg === 'all' ? [
                 setproductfiltrctg(initialstate),
                 setactive(-1)
             ] : [
                 setproductfiltrctg(
-                    product.filter((item) => item.category === ctg._id)
+                    product.filter((item) => item.category._id === ctg.id)
                 ),
-                setactive(ctg._id.$oid)
+                setactive(ctg.id)
             ]
         }
     }

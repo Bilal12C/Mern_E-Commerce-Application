@@ -139,9 +139,9 @@ module.exports.DeleteProduct = async (req, res) => {
         const find = await product.findByIdAndDelete(req.params.id)
         console.log(find)
         if (find) {
-            return res.status(200).send("The product has been deleted")
+            return res.json({status:true,msg:"The Product has been deleted"})
         }
-        return res.status(400).send("The product has  not been Deleted")
+        return res.json({status:false,msg:"The Product has not been deleted"})
 
     } catch (error) {
         res.status(500).json({ msg: error.message })
