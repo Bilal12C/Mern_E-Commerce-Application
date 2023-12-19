@@ -29,12 +29,12 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
 })
-productrouter.put('/:id',upload.single('image'), UpdateProduct)
+productrouter.put('/:id', UpdateProduct)
 productrouter.get('/get-count/', ProductCount)
-productrouter.post('/', upload.single('image'), PostProduct)
+productrouter.post('/', PostProduct)
 productrouter.get('/', GetProduct)
 productrouter.get('/:id', GetIndividualProduct)
-productrouter.put('/gallery-images/:id',upload.array('Images',10),UpdateGalleryimages)
+productrouter.put('/gallery-images/:id',UpdateGalleryimages)
 productrouter.delete('/:id', DeleteProduct)
 productrouter.get('/featured/:count', FeaturedProduct)
 productrouter.get('/filter', FilterProductByCategory)

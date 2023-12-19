@@ -1,10 +1,24 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Image, ListItem } from '@rneui/themed';
+import { showMessage } from 'react-native-flash-message';
+import axios from 'axios';
+import { API_URL, placeorderurl } from '../../actions/type';
+import { data } from '../../assets/data/data';
 
 const Confirm = (props) => {
   const userorder = props.route?.params;
-  console.log("user", userorder)
+  console.log("user  ", userorder)
+
+  const placeorder = async () => {
+    console.log(userorder)
+    console.log(userorder.finalorder)
+    // const url = API_URL + '/orders' + placeorderurl;
+    // console.log(url)
+    // const res = await axios.post(url,userorder.finalorder.orderitem);
+    // console.log("res",res)
+  }
   return (
     <View style={styles.container}>
 
@@ -53,6 +67,9 @@ const Confirm = (props) => {
                 )
               })}
             </View>
+            <Pressable onPress={placeorder} style={{height:50,marginVertical:20,backgroundColor:'green',width:'90%',justifyContent:'center',alignItems:'center'}}>
+              <Text style={{color:'white',fontSize:20}}>Place Order</Text>
+            </Pressable>
           </ScrollView>
               
           

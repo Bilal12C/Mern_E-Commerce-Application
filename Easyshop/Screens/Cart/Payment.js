@@ -31,13 +31,13 @@ const Payment = (props) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Choose Your Payment Method</Text>
-      {/* {deliveryMethod.map((item) => {
+      {deliveryMethod.map((item) => {
         return (
           <ListItem style={styles.liststyle} key={item.name} onPress={() => setselectedvalue(item.value)} >
             <ListItem.Title style={{color:selectedvalue == item.value ? 'orange' : 'black'}}>{item.name}</ListItem.Title>
           </ListItem>
         )
-      })} */}
+      })}
       {
         selectedvalue === 3 ? (
           <>

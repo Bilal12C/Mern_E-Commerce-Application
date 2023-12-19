@@ -48,7 +48,7 @@ const Product = () => {
       setProductfilter([])
       setloading(true)
     }
-  }, [])
+  }, [focus])
 
   const GetProductData = async () => {
     const url = API_URL + Get_Product_URL;
@@ -63,7 +63,6 @@ const Product = () => {
 
 
   const deleteitem = async (id) => {
-    console.log("id", id)
 
     const url = API_URL + Get_Product_URL;
     const token = await AsyncStorage.getItem('token')
@@ -99,7 +98,7 @@ const Product = () => {
         <Pressable onPress={() => navigate.navigate('Order')} style={styles.samebutton}>
           <Text style={styles.sameText}>Orders</Text>
         </Pressable >
-        <Pressable onPress={() => navigate.navigate('ProductForm')} style={styles.samebutton}>
+        <Pressable onPress={() => navigate.navigate('ProductForm',{type:'Add'})} style={styles.samebutton}>
           <Text style={styles.sameText}>Products</Text>
         </Pressable>
         <Pressable onPress={() => navigate.navigate('Categories')} style={styles.samebutton}>

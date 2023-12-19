@@ -8,11 +8,11 @@ const morgan = require('morgan');
 
 
 
-app.use(cors({
-    origin:'*'
-}))
+
 const connectdatabase = require('./connect/connectdb');
 connectdatabase();
+
+app.use(cors())
 
 
 const categoryrouter = require('./routers/category');
@@ -33,7 +33,7 @@ app.use('/public/uploads',express.static(__dirname+ '/public/uploads' ))
 app.use(`${API_URL}category`,categoryrouter)
 app.use(`${API_URL}product`,productrouter)
 app.use(`${API_URL}user`,userrouter)
-app.use(`${API_URL}Order`,OrderRouter)
+app.use(`${API_URL}orders`,OrderRouter)
 
 
 app.get('/',(req,res) => {

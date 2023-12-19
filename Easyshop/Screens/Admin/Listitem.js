@@ -48,7 +48,7 @@ const Listitem = ({item,deleteitem,index}) => {
               <Icon onPress={() => setModalVisible(false)} name='close' size={30} color={'black'}/>
             </View>
             {/* <View style={styles.rows}> */}
-            <Pressable style={[styles.sameButton,{backgroundColor:'green'}]}>
+            <Pressable onPress={() => navigation.navigate('ProductForm',{item:item , type:'edit'})} style={[styles.sameButton,{backgroundColor:'green'}]}>
               <Text style={styles.sametext}>Edit</Text>
             </Pressable>
             <Pressable onPress={() => {

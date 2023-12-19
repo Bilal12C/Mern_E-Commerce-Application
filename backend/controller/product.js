@@ -7,17 +7,15 @@ const { default: mongoose } = require('mongoose');
 module.exports.PostProduct = async (req, res) => {
     try {
         const check = await categorie.findById(req.body.category);
+        console.log("chce",check)
         if (!check) return res.status(400).json({ msg: "invalid category Id" });
-        const filecheck  = req.file;
-        if (!filecheck) return res.status(400).json({ msg: "no image has been found" });
-        const filename = await req.file.filename;
-        console.log("file",filename)
-        const basepath = `${req.protocol}://${req.get('host')}/public/uploads`
+        // const filecheck  = req.file;
+        // if (!filecheck) return res.status(400).json({ msg: "no image has been found" });
         const isProductAdded = await product.create({
             name: req.body.name,
             description: req.body.description,
             richDescription: req.body.richDescription,
-            image: `${basepath}/${filename}`,
+            image: req.body.image,
             Images: req.body.Images,
             brand: req.body.brand,
             price: req.body.price,
@@ -33,9 +31,10 @@ module.exports.PostProduct = async (req, res) => {
             return res.status(404).send("The product cannot be created")
         }
 
-        return res.status(200).json({ msg: "The Product has been created",data:isProductAdded })
+        return res.status(200).json({ msg: "The Product has been created",data:isProductAdded,status:true })
 
     } catch (error) {
+        console.log(error)
         res.status(500).json({ msg: error.message })
     }
 }
@@ -81,6 +80,7 @@ module.exports.UpdateProduct = async (req, res) => {
             res.status(404).json({msg:"Product id is not valid"})
         }
 
+        console.log("heelo")
         const check = await categorie.findById(req.body.category);
         if (!check) return res.status(400).json({ msg: "invalid category Id" });
 
@@ -89,18 +89,7 @@ module.exports.UpdateProduct = async (req, res) => {
         if (!checkprdouct) return res.status(400).json({ msg: "invalid product Id" });
   
 
-        const file = req.file;
-        let imagepath = ""
-        if(file){
-            console.log("image select ki ha")
-            const filename = await req.file.filename;
-            const basepath = `${req.protocol}://${req.get('host')}/public/uploads/${filename}`
-            imagepath = basepath
-        }
-        else{
-            console.log("image select nae kii");
-            imagepath =  product.image;
-        }
+       
 
         const update = await product.findByIdAndUpdate(
             req.params.id,
@@ -108,7 +97,7 @@ module.exports.UpdateProduct = async (req, res) => {
                 name: req.body.name,
                 description: req.body.description,
                 richDescription: req.body.richDescription,
-                image: imagepath,
+                image: req.body.image,
                 Images: req.body.Images,
                 brand: req.body.brand,
                 price: req.body.price,
@@ -120,10 +109,12 @@ module.exports.UpdateProduct = async (req, res) => {
             },
             {new:true}
         )
+
+        console.log("mmm",update)
         if (!update) {
-            return res.status(200).send("The product has not been updated")
+            return res.status(200).send("The product has not  been updated")
         }
-        return res.status(400).json({msg:"The product has been Updated",data:update})
+        return res.json({msg:"The product has been Updated",data:update,status:200})
 
     } catch (error) {
         res.status(500).json({ msg: error.message })

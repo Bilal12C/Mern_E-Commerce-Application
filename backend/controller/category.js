@@ -4,12 +4,12 @@ const categorie = require("../models/categorie");
 
 module.exports.POSTCATEGORY = async (req, res) => {
     try {
-        const { name, Iconname, Color } = req.body;
+        const { name } = req.body;
         const Categoryitem = await categorie.create({
             name: name,
-            Iconname: Iconname,
-            Color: Color,
         })
+
+        console.log(Categoryitem)
 
         if (!Categoryitem) {
             return res.status(404).send("The category cannt be created")

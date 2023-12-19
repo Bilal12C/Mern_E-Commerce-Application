@@ -5,7 +5,8 @@ const Orderitem = require("../models/Orderitem");
 
 module.exports.PlaceOrder = async (req, res) => {
     try {
-        const orderitemids = Promise.all(req.body.orderitems.map(async item => {
+        console.log(req.body)
+        const orderitemids = Promise.all(req.body.map(async item => {
             let orderitemid = new Orderitem({
                 quantity:item.quantity,
                 Product:item.Product,
@@ -14,30 +15,30 @@ module.exports.PlaceOrder = async (req, res) => {
             return orderitemid._id.toString();
         }))
 
-        const waitfororder = await orderitemids;
-        console.log("orderitem",waitfororder)
+        // const waitfororder = await orderitemids;
+        // console.log("orderitem",waitfororder)
         
-        const totalPriceOrder = await Promise.all(waitfororder.map(async(item) => {
-            const orderitemcal = await Orderitem.findById(item).populate('Product','price')
-            let order = orderitemcal.quantity * orderitemcal.Product.price;
-            return order;
-        }))
-        console.log(totalPriceOrder)
-        const totalprice = totalPriceOrder.reduce((a,b) => {
-            return a+b
-        },0)
-        const orderitem = await Order.create({
-            orderitems:waitfororder,
-            shippingAddress1:req.body.shippingAddress1,
-            shippingAddress2:req.body.shippingAddress2,
-            zip: req.body.zip,
-            city: req.body.city,
-            country: req.body.country,
-            phone: req.body.phone,
-            status:req.body.status,
-            totalPrice:totalprice,
-            User:req.body.User
-        })
+        // const totalPriceOrder = await Promise.all(waitfororder.map(async(item) => {
+        //     const orderitemcal = await Orderitem.findById(item).populate('Product','price')
+        //     let order = orderitemcal.quantity * orderitemcal.Product.price;
+        //     return order;
+        // }))
+        // console.log(totalPriceOrder)
+        // const totalprice = totalPriceOrder.reduce((a,b) => {
+        //     return a+b
+        // },0)
+        // const orderitem = await Order.create({
+        //     orderitems:waitfororder,
+        //     shippingAddress1:req.body.shippingAddress1,
+        //     shippingAddress2:req.body.shippingAddress2,
+        //     zip: req.body.zip,
+        //     city: req.body.city,
+        //     country: req.body.country,
+        //     phone: req.body.phone,
+        //     status:req.body.status,
+        //     totalPrice:totalprice,
+        //     User:req.body.User
+        // })
 
         if (!orderitem) {
             return res.status(404).send("Your order have some problems")
@@ -46,6 +47,7 @@ module.exports.PlaceOrder = async (req, res) => {
         return res.status(200).json({ msg: "Your order have been placed" , data:orderitem})
 
     } catch (error) {
+        console.log("error",error)
         res.status(500).json({ msg: error.message })
     }
 }
